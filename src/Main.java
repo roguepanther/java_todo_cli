@@ -2,35 +2,38 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+
+    static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
         // Creating a simple CLI todo lists
         ArrayList<String> todos = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
+
         int userChoice;
         displayMenu();
         // Take user's input via the Scanner
         userChoice = scanner.nextInt();
+        // Now we need to consume the new line character from the buffer
+        scanner.nextLine();
         // Repeat this until the user explicitly exits the programme.
-        while(userChoice != 4){ // Flawed logic
+        while(userChoice != 4) {
             switch (userChoice) {
                 case 1:
                     addTodo(todos);
-                    promptUser();
-                    continue;
+                    break;
                 case 2:
-                    removeTodo();
-                    promptUser();
-                    continue;
+                    removeTodo(todos);
+                    break;
                 case 3:
                     viewTodos(todos);
-                    promptUser();
-                    continue;
+                    break;
                 case 4:
-                    System.exit(0);
+                    return;
                 default:
                     System.out.println("Incorrect choice. Please try again!");
-                    userChoice = scanner.nextInt(); // We can add a request in the event user makes incorrect choice
+                    break;
             }
+            userChoice = scanner.nextInt();
+            scanner.nextLine();
         }
     }
 
@@ -46,39 +49,59 @@ public class Main {
     }
 
     public static void addTodo(ArrayList<String> todos) {
-        // TODO: Add the function for adding a todo by the user
-        // Need to add a todo into the general array (array list?) of todos
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter a todo: ");
         String todo = scanner.nextLine();
-        // Do we want to sanitize the user input? Probably not
         todos.add(todo);
+        promptUser();
     }
 
-    public static void removeTodo() {
+    public static void removeTodo(ArrayList<String> todos) {
         // TODO: Add the function for removing a todo by the user
+        // Loop through the existing array List to search through all tasks
+        // flag to track if a task has been found
+        boolean taskFound = false;
+        String taskToRemove;
+        System.out.println("Which task would you like to remove? : ");
+        taskToRemove = scanner.nextLine();
+        for(int i = 0; i < todos.size(); i++) {
+            if(todos.get(i).equals(taskToRemove)){
+                todos.remove(i);
+                taskFound = true;
+                i--;
+            }
+        }
+        // If task was not found, notify the user
+        if (!taskFound) {
+            System.out.println("Task was not found. Try again!");
+        }
+        promptUser();
     }
 
+    // Function to view all todos by looping through the ArrayList
     public static void viewTodos(ArrayList<String> todos) {
-        // TODO: Add the function for viewing all todos by the user
-        System.out.println("All Todos: ");
-        for(String todo : todos) {
-            System.out.println("- " + todo);
+        // Display a message to the user if there are no tasks
+        if(todos.isEmpty()) {
+            System.out.println("There are no tasks in the list.");
+        } else {
+            System.out.println("All Todos: ");
+            for(String todo : todos) {
+                System.out.println("- " + todo);
+            }
         }
+        promptUser();
     }
 
     public static void promptUser() {
-        // TODO: Add functionality to trigger the user prompt or not
-        Scanner reprompt = new Scanner(System.in);
         System.out.println("Would you like to return back to the main menu? ");
-        System.out.println("5. Yes");
-        System.out.println("2. No");
-        int userAnswer = reprompt.nextInt();
-        if(userAnswer == 5) {
+        System.out.println("1. Yes");
+        System.out.println("4. No");
+        int userAnswer = scanner.nextInt();
+        // Clear the buffer of the next line to take the input
+        scanner.nextLine();
+        if (userAnswer == 1) {
             displayMenu();
-        } else {
+        } else if(userAnswer == 4) {
             System.out.println("Thank you for using ToDo App");
-            System.exit(0);
         }
     }
 }
