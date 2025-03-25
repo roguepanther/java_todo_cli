@@ -6,7 +6,7 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
         // Creating a simple CLI todo lists
-        ArrayList<String> todos = new ArrayList<>();
+        ArrayList<Todo> todos = new ArrayList<>();
 
         int userChoice;
         displayMenu();
@@ -21,13 +21,15 @@ public class Main {
                     addTodo(todos);
                     break;
                 case 2:
-                    removeTodo(todos);
+//                    removeTodo(todos);
                     break;
                 case 3:
                     viewTodos(todos);
                     break;
                 case 4:
                     return;
+                case 6:
+                    modifyDueDate(todos);
                 default:
                     System.out.println("Incorrect choice. Please try again!");
                     break;
@@ -38,20 +40,28 @@ public class Main {
     }
 
     public static void displayMenu() {
+        // TODO: Restructure the menu to follow a numerical flow
         System.out.println("---------------------");
         System.out.println("ToDo List V1");
         System.out.println("---------------------");
         System.out.println("Select Option Below: ");
         System.out.println("1. Add a ToDo ");
         System.out.println("2. Remove a ToDo ");
+        System.out.println("6. Modify a Todo ");
         System.out.println("3. View All ToDos ");
         System.out.println("4. Exit! ");
     }
 
-    public static void addTodo(ArrayList<String> todos) {
+    public static void addTodo(ArrayList<Todo> todos) {
         System.out.println("Please enter a todo: ");
         String todo = scanner.nextLine();
-        todos.add(todo);
+        //TODO: Add the ability to add a due date
+        System.out.println("Please enter Due Date: ");
+        System.out.println("Format: dd/MM/yyyy");
+        String dueDate = scanner.nextLine();
+        // Create a new todo object and add it
+        Todo newTodo = new Todo(todo, dueDate);
+        todos.add(newTodo);
         promptUser();
     }
 
@@ -78,16 +88,43 @@ public class Main {
     }
 
     // Function to view all todos by looping through the ArrayList
-    public static void viewTodos(ArrayList<String> todos) {
+    public static void viewTodos(ArrayList<Todo> todos) {
         // Display a message to the user if there are no tasks
         if(todos.isEmpty()) {
             System.out.println("There are no tasks in the list.");
         } else {
             System.out.println("All Todos: ");
-            for(String todo : todos) {
-                System.out.println("- " + todo);
+            for(Todo todo : todos) {
+                todo.displayTodo();
             }
         }
+        promptUser();
+    }
+
+    public static void modifyDueDate(ArrayList<Todo> todos) {
+        // First need to ask the user which todo they want to modify
+        System.out.println("Which todo would you like to modify due date for: ");
+        String selectTodo = scanner.nextLine();
+        // Select the task and print out the existing due date
+        Todo todoToModify = null;
+        for (Todo todo : todos) {
+            if(selectTodo.equals(todo.taskDescription)) {
+                todoToModify = todo;
+                System.out.println("Current Due Date for task: " + todo.dueDate);
+                break;
+            }
+        }
+        // Check if we found the todo
+        if(todoToModify == null) {
+            System.out.println("Task not found!");
+            return;
+        }
+
+        System.out.println("Enter new due date: (dd/MM/yyyy)");
+
+        // update to the new date
+        todoToModify.dueDate = scanner.nextLine();
+        System.out.println("New due date has been added!");
         promptUser();
     }
 
@@ -102,6 +139,7 @@ public class Main {
             displayMenu();
         } else if(userAnswer == 4) {
             System.out.println("Thank you for using ToDo App");
+            System.exit(0);
         }
     }
 }
