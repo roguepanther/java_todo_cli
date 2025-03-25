@@ -27,9 +27,14 @@ public class Main {
                     viewTodos(todos);
                     break;
                 case 4:
-                    return;
-                case 6:
                     modifyDueDate(todos);
+                    break;
+                case 5:
+                    markAsCompleted(todos);
+                    break;
+                case 6:
+                    System.out.println("Goodbye!");
+                    return;
                 default:
                     System.out.println("Incorrect choice. Please try again!");
                     break;
@@ -47,9 +52,10 @@ public class Main {
         System.out.println("Select Option Below: ");
         System.out.println("1. Add a ToDo ");
         System.out.println("2. Remove a ToDo ");
-        System.out.println("6. Modify a Todo ");
         System.out.println("3. View All ToDos ");
-        System.out.println("4. Exit! ");
+        System.out.println("4. Modify a Todo ");
+        System.out.println("5. Mark ToDo as Completed ");
+        System.out.println("6. Exit! ");
     }
 
     public static void addTodo(ArrayList<Todo> todos) {
@@ -128,16 +134,38 @@ public class Main {
         promptUser();
     }
 
+    public static void markAsCompleted(ArrayList<Todo> todos) {
+        System.out.println("Which todo would you like to mark as completed: ");
+        String selectTodo = scanner.nextLine();
+        Todo todoToMark = null;
+
+        for(Todo todo : todos) {
+            if(selectTodo.equals(todo.taskDescription)) {
+                todoToMark = todo;
+                break;
+            }
+        }
+
+        if(todoToMark == null) {
+            System.out.println("Task has not been found");
+            return;
+        }
+
+        todoToMark.markAsCompleted();
+        promptUser();
+    }
+
+
     public static void promptUser() {
         System.out.println("Would you like to return back to the main menu? ");
         System.out.println("1. Yes");
-        System.out.println("4. No");
+        System.out.println("6. No");
         int userAnswer = scanner.nextInt();
         // Clear the buffer of the next line to take the input
         scanner.nextLine();
         if (userAnswer == 1) {
             displayMenu();
-        } else if(userAnswer == 4) {
+        } else if(userAnswer == 6) {
             System.out.println("Thank you for using ToDo App");
             System.exit(0);
         }
