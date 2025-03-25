@@ -40,6 +40,7 @@ public class Main {
     }
 
     public static void displayMenu() {
+        // TODO: Restructure the menu to follow a numerical flow
         System.out.println("---------------------");
         System.out.println("ToDo List V1");
         System.out.println("---------------------");
@@ -94,7 +95,6 @@ public class Main {
         } else {
             System.out.println("All Todos: ");
             for(Todo todo : todos) {
-//                System.out.println("- " + todo.taskDescription + " Due Date: " + todo.dueDate);
                 todo.displayTodo();
             }
         }
@@ -106,12 +106,26 @@ public class Main {
         System.out.println("Which todo would you like to modify due date for: ");
         String selectTodo = scanner.nextLine();
         // Select the task and print out the existing due date
+        Todo todoToModify = null;
         for (Todo todo : todos) {
             if(selectTodo.equals(todo.taskDescription)) {
+                todoToModify = todo;
                 System.out.println("Current Due Date for task: " + todo.dueDate);
+                break;
             }
         }
+        // Check if we found the todo
+        if(todoToModify == null) {
+            System.out.println("Task not found!");
+            return;
+        }
 
+        System.out.println("Enter new due date: (dd/MM/yyyy)");
+
+        // update to the new date
+        todoToModify.dueDate = scanner.nextLine();
+        System.out.println("New due date has been added!");
+        promptUser();
     }
 
     public static void promptUser() {
