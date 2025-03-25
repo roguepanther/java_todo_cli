@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -33,6 +36,9 @@ public class Main {
                     markAsCompleted(todos);
                     break;
                 case 6:
+                    saveTodosToFile(todos);
+                    break;
+                case 7:
                     System.out.println("Goodbye!");
                     return;
                 default:
@@ -55,7 +61,8 @@ public class Main {
         System.out.println("3. View All ToDos ");
         System.out.println("4. Modify a Todo ");
         System.out.println("5. Mark ToDo as Completed ");
-        System.out.println("6. Exit! ");
+        System.out.println("6. Save Existing Todos");
+        System.out.println("7. Exit! ");
     }
 
     public static void addTodo(ArrayList<Todo> todos) {
@@ -155,17 +162,39 @@ public class Main {
         promptUser();
     }
 
+    public static void saveTodosToFile(ArrayList<Todo> todos) {
+        try (
+                FileWriter writer = new FileWriter("tasks.txt"); // Overwrites by default
+                BufferedWriter bufferedWriter = new BufferedWriter(writer))
+        {
+            // Write each todo to a file
+            for (Todo todo : todos) {
+                // format: task description, dueDate, completed
+                String todoLine = todo.taskDescription + "," + todo.dueDate + "," + todo.isCompleted;
+                System.out.println(todo.taskDescription + "," + todo.dueDate + "," + todo.isCompleted);
+                bufferedWriter.write(todoLine);
+                bufferedWriter.newLine(); // add a new line after each todo
+
+            }
+
+            System.out.println("Todos successfully saved to tasks.txt");
+        } catch (IOException e) {
+            System.out.println("Error saving todos: " + e.getMessage());
+        }
+        promptUser();
+    }
+
 
     public static void promptUser() {
         System.out.println("Would you like to return back to the main menu? ");
         System.out.println("1. Yes");
-        System.out.println("6. No");
+        System.out.println("7. No");
         int userAnswer = scanner.nextInt();
         // Clear the buffer of the next line to take the input
         scanner.nextLine();
         if (userAnswer == 1) {
             displayMenu();
-        } else if(userAnswer == 6) {
+        } else if(userAnswer == 7) {
             System.out.println("Thank you for using ToDo App");
             System.exit(0);
         }
